@@ -47,6 +47,15 @@
       width: 122px;
     }
   </style>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({
+      token: "6fe03ec835eb4e0db79694dbc19bcf18",
+      application: "vsCode",
+      versioin: "1.0"
+    });
+  </script>
+
 </head>
 
 <body>
@@ -88,20 +97,126 @@
   </main>
 
   <script>
+    class FirstNumArithmeticError extends Error {
+      constructor(message, type) {
+        super(message);
+        this.name = "FirstNumArithmeticError";
+        this.type = type;
+      }
+    }
+    class SecondNumArithmeticError extends Error {
+      constructor(message, type) {
+        super(message);
+        this.name = "SecondNumArithmeticError";
+        this.type = type;
+      }
+    }
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
+
+
+
       let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+
+      try {
+        let firstNum = document.querySelector('#first-num').value;
+        let secondNum = document.querySelector('#second-num').value;
+        let operator = document.querySelector('#operator').value;
+
+        if (!Number(firstNum)) {
+          throw new FirstNumArithmeticError('first number has invalid type')
+        }
+        if (!Number(secondNum)) {
+          throw new SecondNumArithmeticError('second number has invalid type')
+        }
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+
+      } catch (error) {
+        if (error instanceof FirstNumArithmeticError) {
+          console.error(`invalid input for the first blank: ${error.message} ${error.type}`);
+        } else if (error instanceof SecondNumArithmeticError) {
+          console.error(`invalid input for the first blank: ${error.message} ${error.type}`);
+        } else {
+          console.error('Error: ', error);
+        }
+        console.log('try to put the correct inputs please');
+      } finally {
+        console.log('Have fun!');
+      }
+
+
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
+    errorBtns[0].addEventListener('click', function () {
+      console.log('Console Log Demo')
+    })
+    errorBtns[1].addEventListener('click', function () {
+      console.error('Console Error Demo');
+    })
+    errorBtns[2].addEventListener('click', function () {
+      console.count('Console Count Demo');
+    })
+    errorBtns[3].addEventListener('click', function () {
+      console.warn('Console Warn Demo');
+    })
+    errorBtns[4].addEventListener('click', function () {
+      console.assert(3 === 2, { number: 2, errorMsg: 'The number does not equal 3' });
+    })
+    errorBtns[5].addEventListener('click', function () {
+      console.clear('Console Clear Demo');
+    })
+    errorBtns[6].addEventListener('click', function () {
+      console.dir(errorBtns[6]);
+    })
+    errorBtns[7].addEventListener('click', function () {
+      console.dirxml(errorBtns[7]);
+    })
+    errorBtns[8].addEventListener('click', function () {
+      console.group();
+    })
+    errorBtns[9].addEventListener('click', function () {
+      console.groupEnd();
+    })
+    errorBtns[10].addEventListener('click', function () {
+      console.table(
+        [{ name: 'Software Engineering', num: 110 },
+        { name: 'Programming Language', num: 130 },
+        { name: 'Advanced Software', num: 112 }]
+      );
+    })
+    errorBtns[11].addEventListener('click', function () {
+      console.time('Timer Button');
+    })
+    errorBtns[12].addEventListener('click', function () {
+      console.timeEnd('Timer Button');
+    })
+    errorBtns[13].addEventListener('click', function () {
+      function handleBtnClick() {
+        function deep() {
+          function deeper() {
+            function deepest() {
+              console.trace();
+            }
+            deepest();
+          }
+          deeper();
+        }
+        deep();
+      }
+      handleBtnClick();
+    })
+    errorBtns[14].addEventListener('click', function () {
+      boom();
+    })
 
-    // Start your code here
-    // You may move this JS to another file if you wish
+    window.error = function (e) {
+      console.log('error happens in program');
+      TrackJS.track(e);
+    }
+
+
   </script>
 </body>
 
